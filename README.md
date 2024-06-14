@@ -2,10 +2,7 @@
 
 ## Architecture
 ```
-message -> AMM Queue -> AMM Scheduler -> AMM Message Consumer
+message -> AMM TaskQueue -> Task successfully finished
+message -> AMM TaskQueue -> Task failed -> AMM DeadLetterQueue -> After 1 minutes retry Task
 ```
 ---
-### Thread pool flow
-```
-1. When the first task comes in, it creates a thread equal to the core size 
-```

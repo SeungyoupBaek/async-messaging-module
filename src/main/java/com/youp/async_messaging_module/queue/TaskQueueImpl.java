@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,13 @@ public class TaskQueueImpl implements TaskQueue {
 
     private final ThreadPoolTaskExecutor taskExecutor;
 
-    public TaskQueueImpl(ThreadPoolTaskExecutor taskExecutor) {
+    private final DeadLetterQueue deadLetterQueue;
+
+    public TaskQueueImpl(@Qualifier("taskExecutor") ThreadPoolTaskExecutor taskExecutor,
+                         DeadLetterQueue deadLetterQueue) {
         this.taskQueue = new LinkedBlockingQueue<>(100); // Limit the queue size
         this.taskExecutor = taskExecutor;
+        this.deadLetterQueue = deadLetterQueue;
         startTaskConsumer();
     }
 
@@ -44,7 +49,12 @@ public class TaskQueueImpl implements TaskQueue {
                 try {
                     Runnable task = taskQueue.poll(1, TimeUnit.SECONDS);
                     if (task != null) {
-                        taskExecutor.execute(task);
+                        try {
+                            taskExecutor.execute(task);
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                            deadLetterQueue.submitFailedTask(task, 0);
+                        }
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
