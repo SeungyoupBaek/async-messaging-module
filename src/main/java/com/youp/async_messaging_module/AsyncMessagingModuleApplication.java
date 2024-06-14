@@ -1,13 +1,13 @@
-package com.youp.async_messagin_module;
+package com.youp.async_messaging_module;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AsyncMessaginModuleApplication {
+public class AsyncMessagingModuleApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AsyncMessaginModuleApplication.class, args);
+		SpringApplication.run(AsyncMessagingModuleApplication.class, args);
 	}
 
 }
