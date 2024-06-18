@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AsyncMessagingModuleApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AsyncMessagingModuleApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AsyncMessagingModuleApplication.class, args);
+    }
 
 }
